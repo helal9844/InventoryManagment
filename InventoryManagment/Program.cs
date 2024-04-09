@@ -1,3 +1,4 @@
+using BL;
 using DAL;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,6 +33,9 @@ namespace InventoryManagment
                 app.UseHsts();
             }
             #region MiddleWares
+
+            app.UseMiddleware<ExceptionMiddleWare>();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
