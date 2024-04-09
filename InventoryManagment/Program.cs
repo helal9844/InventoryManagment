@@ -1,3 +1,6 @@
+using DAL;
+using Microsoft.EntityFrameworkCore;
+
 namespace InventoryManagment
 {
     public class Program
@@ -5,10 +8,20 @@ namespace InventoryManagment
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            #region Services
 
+            #region DefaultServices
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            #endregion
 
+            #region DataBase
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<AppDbContext>(option=>option.UseSqlServer(connectionString));
+            #endregion
+
+            #endregion
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -18,7 +31,7 @@ namespace InventoryManagment
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            #region MiddleWares
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -31,6 +44,7 @@ namespace InventoryManagment
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+            #endregion
         }
     }
 }
