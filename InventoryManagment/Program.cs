@@ -9,6 +9,7 @@ namespace InventoryManagment
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
             #region Services
 
             #region DefaultServices
@@ -22,7 +23,16 @@ namespace InventoryManagment
             builder.Services.AddDbContext<AppDbContext>(option=>option.UseSqlServer(connectionString));
             #endregion
 
+            #region AutoMapper
+            builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
             #endregion
+
+            #region Repos
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            #endregion
+
+            #endregion
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

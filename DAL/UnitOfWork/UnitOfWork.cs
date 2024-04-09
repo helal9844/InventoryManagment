@@ -12,6 +12,9 @@ namespace DAL
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
+            StoreRepo = new StoreRepo(_context);
+            ItemRepo = new ItemRepo(_context);
+            StoreItemRepo = new StoreItemRepo(_context);
         }
 
         public IItemRepo ItemRepo { get; set; }

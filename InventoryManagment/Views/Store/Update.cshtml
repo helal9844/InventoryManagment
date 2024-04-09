@@ -1,0 +1,25 @@
+﻿@model BL.StoreWriteDTO
+@{
+    ViewData["Title"] = "Update Store";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Update" asp-route-id="@Model.Id" method="post">
+    <div class="form-group">
+        <label asp-for="StoreName"></label>
+        <input asp-for="StoreName" class="form-control" />
+        <span asp-validation-for="StoreName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StoreLocation"></label>
+        <input asp-for="StoreLocation" class="form-control" />
+        <span asp-validation-for="StoreLocation" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ContactInformation"></label>
+        <input asp-for="ContactInformation" class="form-control" />
+        <span asp-validation-for="ContactInformation" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Save</button>
+</form>
