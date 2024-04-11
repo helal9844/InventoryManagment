@@ -15,6 +15,12 @@ namespace BL
         {
             CreateMap<Store, StoreWriteDTO>().ReverseMap();
             CreateMap<Store, StoreReadDTO>().ReverseMap();
+
+            CreateMap<Item, ItemWriteDTO>().ReverseMap();
+            CreateMap<Item, ItemReadDTO>().ReverseMap();
+
+            CreateMap<StoreItem, StoreItemWriteDTO>().ReverseMap();
+            CreateMap<StoreItem, StoreItemReadDTO>().ReverseMap();
         }
     }
 }

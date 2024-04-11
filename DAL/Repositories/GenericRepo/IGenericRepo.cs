@@ -11,7 +11,6 @@ namespace DAL
     {
         List<T> GetAll();
         Task<List<T>> GetAllAsunc();
-        T? GetById(int id);
         Task<T?> GetByIdAsync(int id);
         void Add(T entity);
         void Update(T entity);

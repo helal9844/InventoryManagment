@@ -18,71 +18,127 @@ namespace InventoryManagment.Controllers
         }
         public IActionResult Index()
         {
-            var stores = _unitOfWork.StoreRepo.GetAll();
-            if (stores == null) return NotFound();
-            var storeDto = _mapper.Map<List<StoreReadDTO>>(stores);
-            return View(storeDto);
+            try
+            {
+                var stores = _unitOfWork.StoreRepo.GetAll();
+                if (stores == null) return NotFound();
+                var storeDto = _mapper.Map<List<StoreReadDTO>>(stores);
+                return View(storeDto);
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Error");
+            }
+            
         }
         public IActionResult Create()
         {
-            return View();
+            try
+            {
+                return View();
+
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Error");
+            }
         }
         [HttpPost]
         public IActionResult Create(StoreWriteDTO dto)
         {
-            if (dto == null) return BadRequest();
+            try
+            {
+                if (dto == null) return BadRequest();
 
-            if (!ModelState.IsValid)
-                return View(dto);
+                if (!ModelState.IsValid)
+                    return View(dto);
 
-            var store = _mapper.Map<Store>(dto);
-            _unitOfWork.StoreRepo.Add(store);
-            _unitOfWork.SaveChanges();
+                var store = _mapper.Map<Store>(dto);
+                _unitOfWork.StoreRepo.Add(store);
+                _unitOfWork.SaveChanges();
+
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Error");
+            }
             
-            
-            return RedirectToAction(nameof(Index));
         }
         public IActionResult Update(int id)
         {
-            var store = _unitOfWork.StoreRepo.GetById(id);
-            if (store == null)
-                return NotFound();
+            try
+            {
+                var store = _unitOfWork.StoreRepo.Find(e => e.Id == id);
+                if (store == null)
+                    return NotFound();
 
-            var storeDTO = _mapper.Map<StoreWriteDTO>(store);
-            return View(storeDTO);
+                var storeDTO = _mapper.Map<StoreWriteDTO>(store);
+                return View(storeDTO);
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Error");
+            }
+            
         }
         [HttpPost]
         public IActionResult Update(int id, StoreWriteDTO dto)
         {
-            if (id != dto.Id|| dto == null) return BadRequest();
+            try
+            {
+                if (id != dto.Id || dto == null) return BadRequest();
 
-            if (!ModelState.IsValid) return View(dto);
+                if (!ModelState.IsValid) return View(dto);
 
-            var store = _mapper.Map<Store>(dto);
-            _unitOfWork.StoreRepo.Update(store);
-            _unitOfWork.SaveChanges();
-            return RedirectToAction(nameof(Index));
+                var store = _mapper.Map<Store>(dto);
+                _unitOfWork.StoreRepo.Update(store);
+                _unitOfWork.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Error");
+            }
+            
         }
         public IActionResult Delete(int id)
         {
-            var store = _unitOfWork.StoreRepo.GetById(id);
-            if (store == null)
+            try
             {
-                return NotFound();
-            }
+                var store = _unitOfWork.StoreRepo.Find(e => e.Id == id);
+                if (store == null)
+                {
+                    return NotFound();
+                }
 
-            var storeDTO = _mapper.Map<StoreWriteDTO>(store);
-            return PartialView(storeDTO);
+                var storeDTO = _mapper.Map<StoreWriteDTO>(store);
+                return PartialView(storeDTO);
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Error");
+            }
+            
         }
         [HttpPost,ActionName("Delete")]
         public IActionResult DeleteStoreConfirmed(int id) 
         {
-            var store = _unitOfWork.StoreRepo.GetById(id);
-            if (store == null) return NotFound();
+            try
+            {
+                var store = _unitOfWork.StoreRepo.Find(e => e.Id == id);
+                if (store == null) return NotFound();
 
-            _unitOfWork.StoreRepo.Delete(store);
-            _unitOfWork.SaveChanges();
-            return RedirectToAction(nameof(Index));
+                _unitOfWork.StoreRepo.Delete(store);
+                _unitOfWork.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Error");
+            }
+            
         }
     }
 }

@@ -23,6 +23,7 @@ namespace DAL
                     ContactInformation = $"Contact Info {i}",
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now,
+                    DeletedDate = DateTime.Now,
                     IsDeleted = false
                 });
             }
@@ -40,6 +41,7 @@ namespace DAL
                     Catagory = $"Category {i}",
                     CreatedDate = DateTime.Now,
                     UpdatedDate = DateTime.Now,
+                    DeletedDate = DateTime.Now,
                     IsDeleted = false
                 });
             }
@@ -59,6 +61,10 @@ namespace DAL
                         ItemId = item.Id,
                         Quantity = new Random().Next(1, 100),
                         Price = Math.Round((decimal)new Random().NextDouble() * 100, 2),
+                        CreatedDate = DateTime.Now,
+                        UpdatedDate = DateTime.Now,
+                        DeletedDate = DateTime.Now,
+                        IsDeleted = false
                     });
                 }
             }

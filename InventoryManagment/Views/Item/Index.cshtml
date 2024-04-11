@@ -1,21 +1,21 @@
-﻿@model List<BL.StoreReadDTO>
+﻿@model List<BL.ItemReadDTO>
 @{
-    ViewData["Title"] = "Store";
+    ViewData["Title"] = "Item";
 }
 <div class="row">
     <div class="col">
         <h1>@ViewData["Title"]</h1>
     </div>
     <div class="col-auto">
-        <a class="btn btn-success" href="@Url.Action("Create")">Create New Store</a>
+        <a class="btn btn-success" href="@Url.Action("Create")">Create New Item</a>
     </div>
 </div>
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">StoreName</th>
-            <th scope="col">Location</th>
-            <th scope="col">Info</th>
+            <th scope="col">ItemName</th>
+            <th scope="col">Description</th>
+            <th scope="col">Catagory</th>
             <th scope="col">CreatedDate</th>
             <th scope="col">UpdatedDate</th>
 
@@ -23,17 +23,18 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var store in Model){
+        @foreach (var item in Model)
+        {
             <tr scope="row">
-                <td>@store.StoreName</td>
-                <td>@store.StoreLocation</td>
-                <td>@store.ContactInformation</td>
-                <td>@store.CreatedDate</td>
-                <td>@store.UpdatedDate</td>
+                <td>@item.ItemName</td>
+                <td>@item.Description</td>
+                <td>@item.Catagory</td>
+                <td>@item.CreatedDate</td>
+                <td>@item.UpdatedDate</td>
 
                 <td>
-                    <a class="btn btn-info" href="@Url.Action("Update", new { id = store.Id })">Edit</a> |
-                    <a class="btn btn-danger" href="#" onclick="openDeleteModal(@store.Id)">Delete</a>
+                    <a class="btn btn-info" href="@Url.Action("Update", new { id = item.Id })">Edit</a> |
+                    <a class="btn btn-danger" href="#" onclick="openDeleteModal(@item.Id)">Delete</a>
                 </td>
             </tr>
         }
@@ -47,7 +48,7 @@
     <script>
         function openDeleteModal(id) {
             $.ajax({
-                url: '/Store/Delete?id=' + id,
+                url: '/Item/Delete?id=' + id,
                 type: 'GET',
                 success: function (response) {
                     $('#deleteModalContainer').html(response);

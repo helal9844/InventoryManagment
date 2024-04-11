@@ -9,5 +9,7 @@ namespace DAL
 {
     public interface IStoreItemRepo:IGenericRepo<StoreItem>
     {
+        List<StoreItem> GetAllInclue();
+        
     }
 }

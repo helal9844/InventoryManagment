@@ -1,0 +1,91 @@
+﻿@model List<BL.StoreItemReadDTO>
+@{
+    ViewData["Title"] = "StoreItem";
+}
+<div class="row">
+    <div class="col">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="col-auto">
+        <a class="btn btn-secondary" href="@Url.Action("Add","StoreItem")" >Add Store Item</a>
+        <a class="btn btn-success" href="@Url.Action("Update","StoreItem", new { storeId = -1, itemId = -1 })">Purchaes</a>
+
+
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">StoreName</th>
+            <th scope="col">ItemName</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var storeItem in Model)
+        {
+            <tr scope="row">
+                <td>@storeItem.Store.StoreName</td>
+                <td>@storeItem.Item.ItemName</td>
+                <td>@storeItem.Quantity</td>
+                <td>@storeItem.Price</td>
+                
+
+                <td>
+                    <a class="btn btn-info edit-btn" href="#" data-store-id="@storeItem.StoreId" data-item-id="@storeItem.ItemId">Edit</a> |
+                    <a class="btn btn-danger" href="#" onclick="openDeleteModal(@storeItem.StoreId,@storeItem.ItemId)">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div id="deleteModalContainer"></div>
+
+@section Scripts {
+    <script>
+        function openDeleteModal(storeid,itemid) {
+            $.ajax({
+                url: '/StoreItem/Delete?storeId=' + storeid + '&itemId=' + itemid,
+                type: 'GET',
+                success: function (response) {
+                    $('#deleteModalContainer').html(response);
+                    $('#deleteModal').modal('show');
+                },
+                error: function () {
+                    alert('Error occurred while loading delete confirmation modal.');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('.edit-btn').click(function (e) {
+                e.preventDefault();
+
+                var storeId = $(this).data('store-id');
+                var itemId = $(this).data('item-id');
+
+                $.ajax({
+                    url: '/StoreItem/GetQuantity?storeId=' + storeId + '&itemId=' + itemId,
+                    type: 'GET',
+                    success: function (data) {
+                        var balance = data.quantity;
+                        var price = data.price;
+
+                        $('#balanceInput').val(balance).prop('readonly', true);
+                        $('#priceInput').val(price).prop('readonly', true);
+                        window.location.href = '/StoreItem/Update?storeId=' + storeId + '&itemId=' + itemId ;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+            
+        });
+    </script>
+}

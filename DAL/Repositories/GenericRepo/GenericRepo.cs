@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DAL
 {
@@ -18,13 +20,17 @@ namespace DAL
         {
             _context = context;
             PropertyInfos = typeof(T).GetProperties();
+
         }
+
         public void Add(T entity)
         {
             foreach (PropertyInfo property in PropertyInfos)
             {
                 if (property.Name == "CreatedDate")
-                    property.SetValue(entity, DateTime.Now);    
+                    property.SetValue(entity, DateTime.Now);
+                if (property.Name == "IsDeleted")
+                    property.SetValue(entity, false);
             }
             _context.Set<T>().Add(entity);
         }
@@ -43,12 +49,16 @@ namespace DAL
 
         public List<T> GetAll()
         {
-            return _context.Set<T>().ToList();
-        }
-
-        public T? GetById(int id)
-        {
-            return _context.Set<T>().Find(id);
+            IQueryable<T> query = _context.Set<T>();
+            foreach (PropertyInfo property in PropertyInfos)
+            {
+                
+                if (property.Name == "IsDeleted")
+                {
+                    query = query.ToList().Where(x => x.GetType().GetProperty(property.Name).GetValue(x).Equals(false)).AsQueryable();
+                }
+            }
+           return query.ToList();
         }
 
         public void Update(T entity)
@@ -57,31 +67,78 @@ namespace DAL
             {
                 if (property.Name == "UpdatedDate")
                     property.SetValue(entity, DateTime.Now);
+                if (property.Name == "IsDeleted")
+                    property.SetValue(entity, false);
             }
             _context.Set<T>().Update(entity);
         }
         public T Find(Expression<Func<T, bool>> expression)
         {
-            return _context.Set<T>().SingleOrDefault(expression);
+            IQueryable<T> query = _context.Set<T>();
+            foreach (PropertyInfo property in PropertyInfos)
+            {
+
+                if (property.Name == "IsDeleted")
+                {
+                    query = query.ToList().Where(x => x.GetType().GetProperty(property.Name).GetValue(x).Equals(false)).AsQueryable();
+                }
+            }
+            return query.SingleOrDefault(expression);
         }
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> expression)
         {
-            return await _context.Set<T>().AnyAsync(expression);
+            IQueryable<T> query = _context.Set<T>();
+            foreach (PropertyInfo property in PropertyInfos)
+            {
+
+                if (property.Name == "IsDeleted")
+                {
+                    query = query.ToList().Where(x => x.GetType().GetProperty(property.Name).GetValue(x).Equals(false)).AsQueryable();
+                }
+            }
+            return await query.AnyAsync(expression);
         }
 
         public async Task<List<T>> GetAllAsunc()
         {
-            return await _context.Set<T>().ToListAsync();
+            IQueryable<T> query = _context.Set<T>();
+            foreach (PropertyInfo property in PropertyInfos)
+            {
+
+                if (property.Name == "IsDeleted")
+                {
+                    query = query.ToList().Where(x => x.GetType().GetProperty(property.Name).GetValue(x).Equals(false)).AsQueryable();
+                }
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
         {
+            IQueryable<T> query = _context.Set<T>();
+            foreach (PropertyInfo property in PropertyInfos)
+            {
+
+                if (property.Name == "IsDeleted")
+                {
+                    query = query.ToList().Where(x => x.GetType().GetProperty(property.Name).GetValue(x).Equals(false)).AsQueryable();
+                }
+            }
             return await _context.Set<T>().FindAsync(id);
         }
 
         public async Task<T?> SingleOrDefualtAsync(Expression<Func<T, bool>> expression)
         {
-            return await _context.Set<T>().SingleOrDefaultAsync(expression);
+            IQueryable<T> query = _context.Set<T>();
+            foreach (PropertyInfo property in PropertyInfos)
+            {
+
+                if (property.Name == "IsDeleted")
+                {
+                    query = query.ToList().Where(x => x.GetType().GetProperty(property.Name).GetValue(x).Equals(false)).AsQueryable();
+                }
+            }
+            return await query.SingleOrDefaultAsync(expression);
         }
     }
 }
